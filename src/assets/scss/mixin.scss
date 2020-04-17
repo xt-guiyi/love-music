@@ -1,0 +1,12 @@
+// 背景图片地址和大小
+@mixin bis($url, $color: none) {
+  background-image: url($url);
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  background-color: $color;
+}
+// flex布局 子元素对齐方式
+@mixin fj($type: flex-start) {
+  display: flex;
+  justify-content: $type;
+}
