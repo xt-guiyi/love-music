@@ -1,0 +1,13 @@
+/*  
+ *这个文件专门用来解决vue组件中的css
+ *因为设置了scoped而导致js动态追加的样式无法生效的问题
+*/
+
+// 在CarouselImage.vue中使用的样式
+.picture {
+  flex: 1;
+  margin: 0 0.5% 0 0.5%;
+  img {
+    width: 100%;
+  }
+}

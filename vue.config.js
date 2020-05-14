@@ -13,5 +13,6 @@ module.exports = {
       .set('store', resolve('src/store'))
       .set('utils', resolve('src/utils'))
       .set('request', resolve('src/request'))
+      .set('plugins', resolve('src/plugins'))
   }
 }

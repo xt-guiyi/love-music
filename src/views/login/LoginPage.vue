@@ -39,23 +39,12 @@ export default {
       // 兼容性写法获取事件对象
       var event = e || window.event
       var target = event.target || event.srcElement
-
       // 判断是否是指定元素被点击(避免容器被点击)
       // console.log(target.id)
       if (target.id === 'content' || target.id === 'loginBar') {
         return false
       }
-
       target.style.opacity = '0.5'
-      // 判断是否勾选用户政策
-      if (!this.$refs.checkboxRef.checked) {
-        // 调用toast组件提示
-        const message = '请先勾选同意 《用户协议》《隐私政策》《儿童隐私政策》'
-        this.$toast(message)
-        // 调用animated动画提示
-        animateCSS(this, 'showAnimateRef', 'shake')
-        return false
-      }
     },
     // 鼠标松开触发
     touchEnd(e) {
@@ -64,7 +53,14 @@ export default {
       var target = event.target || event.srcElement
       target.style.opacity = '1'
       // 判断是否勾选用户政策
-      if (this.$refs.checkboxRef.checked) {
+      if (!this.$refs.checkboxRef.checked) {
+        // 调用toast组件提示
+        const message = '请先勾选同意 《用户协议》《隐私政策》《儿童隐私政策》'
+        this.$toast(message)
+        // 调用animated动画提示
+        animateCSS(this, 'showAnimateRef', 'shake')
+        return false
+      } else {
         if (target.matches('.cellphone')) {
           this.$router.push({ name: 'MobileLoginTel' })
         }
@@ -96,7 +92,7 @@ export default {
   display: inline-block;
   border-radius: 50%;
   background-origin: content-box;
-  border: 1px solid $netease--color-four;
+  border: 1px solid $netease-color-four;
   padding: 0.8rem;
   margin: auto auto;
 }
@@ -131,13 +127,13 @@ export default {
   bottom: 5%;
   cursor: pointer;
   .cellphone {
-    color: $netease--color-two;
-    background-color: $netease--color-one;
+    color: $netease-color-two;
+    background-color: $netease-color-one;
   }
   .experience {
-    color: $netease--color-three;
+    color: $netease-color-three;
     background-color: $netease-background-Color;
-    border: 1px solid $netease--color-four;
+    border: 1px solid $netease-color-four;
   }
   #loginBar {
     height: 7.2rem;
@@ -158,7 +154,7 @@ export default {
 }
 .side {
   font-size: 0.8rem;
-  color: $netease--color-one;
+  color: $netease-color-one;
   text-align: center;
   position: absolute;
   bottom: 2.5%;

@@ -10,3 +10,28 @@
   display: flex;
   justify-content: $type;
 }
+
+// position布局
+@mixin pz($position: relative, $top: unset, $bottom: unset, $zIndex: unset) {
+  position: $position;
+  top: $top;
+  bottom: $bottom;
+  z-index: $zIndex;
+}
+
+// 单行超出省略
+@mixin singleEllipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+// 多行省略
+@mixin mulEllipsis($clamp: 2) {
+  display: -webkit-box; /* autoprefixer: off */
+  -webkit-box-orient: vertical; /* autoprefixer: on */
+  -webkit-line-clamp: $clamp;
+  // -webkit-box-align: stretch;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

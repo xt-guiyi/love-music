@@ -2,12 +2,14 @@
  * axios封装
  * 请求拦截，响应拦截,错误回调统一处理
  */
+
 import axios from 'axios'
 // 使用toast插件
 import Vue from 'vue'
-import ToastObj from 'components/common/toast/index.js'
-Vue.use(ToastObj)
+
 // base地址
+// http://172.20.10.5:8080/#/Login
+// 172.20.10.1
 axios.defaults.baseURL = 'http://192.168.43.47:3000'
 
 // 请求失败处理
@@ -17,6 +19,9 @@ const errorHandle = (status, other) => {
     // 501：没有这个账号
     case 501:
       Vue.prototype.$toast('账号不存在')
+      break
+    case 502:
+      Vue.prototype.$toast('网络错误')
       break
     //  509 登录错误超过限制
     case 509:

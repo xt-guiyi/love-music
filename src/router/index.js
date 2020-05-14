@@ -24,7 +24,7 @@ const routes = [
     name: 'MobileLoginTel',
     component: () =>
       import(
-        /* webpackChunkName: "login-Mode" */ 'components/loginMode/mobileLogin/Tel.vue'
+        /* webpackChunkName: "login-Mode" */ 'views/login/mobileLogin/Tel.vue'
       )
   },
   {
@@ -32,15 +32,37 @@ const routes = [
     name: 'MobileLoginPass',
     component: () =>
       import(
-        /* webpackChunkName: "login-Mode" */ 'components/loginMode/mobileLogin/Password.vue'
+        /* webpackChunkName: "login-Mode" */ 'views/login/mobileLogin/Password.vue'
       )
   },
   {
-    path: '/Find',
-    name: 'Find',
+    path: '/Main/',
+    name: 'Main',
     component: () =>
-      import(/* webpackChunkName: "main" */ 'views/main/Find.vue')
+      import(/* webpackChunkName: "main" */ 'views/main/Main.vue'),
+    children: [
+      {
+        path: 'My',
+        name: 'My',
+        component: () =>
+          import(/* webpackChunkName: "main-My" */ 'views/main/my/My.vue')
+      },
+      {
+        path: 'Find',
+        name: 'Find',
+        component: () =>
+          import(/* webpackChunkName: "main-Find" */ 'views/main/find/Find.vue')
+      }
+    ]
   }
+  // {
+  //   path: '/SongListDetails',
+  //   name: 'SongListDetails',
+  //   component: () =>
+  //     import(
+  //       /* webpackChunkName: "main-Find" */ 'views/main/songList/songListDetails'
+  //     )
+  // }
 ]
 
 const router = new VueRouter({

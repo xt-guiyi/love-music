@@ -1,16 +1,43 @@
+* {
+  margin: 0;
+  padding: 0px;
+}
+
 html,
 body,
 #app {
   height: 100%;
 }
+
 html {
-  font-size: 62.5%;
   // 解决安卓苹果在点击事件中出现蓝框问题
   -webkit-tap-highlight-color: transparent;
 }
-* {
-  margin: 0;
-  padding: 0px;
+
+@media screen and (max-width: 640px) {
+  html {
+    font-size: 10px;
+  }
+}
+@media screen and (min-width: 750px) {
+  html {
+    font-size: 15px;
+  }
+}
+@media screen and(min-width: 1024px) {
+  html {
+    font-size: 20px;
+  }
+}
+
+// 清除浮动
+.clearfix:after {
+  content: '';
+  height: 0;
+  line-height: 0;
+  display: block;
+  visibility: hidden;
+  clear: both;
 }
 // 字体文件
 @font-face {

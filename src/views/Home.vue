@@ -43,7 +43,7 @@ export default {
 #home {
   width: 100%;
   height: 100%;
-  color: $netease--color-one;
+  color: $netease-color-one;
   background-color: $netease-background-Color;
   position: relative;
   @include fj(center);
