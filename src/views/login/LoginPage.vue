@@ -52,6 +52,7 @@ export default {
       var event = e || window.event
       var target = event.target || event.srcElement
       target.style.opacity = '1'
+      console.log(e)
       // 判断是否勾选用户政策
       if (!this.$refs.checkboxRef.checked) {
         // 调用toast组件提示
@@ -60,10 +61,10 @@ export default {
         // 调用animated动画提示
         animateCSS(this, 'showAnimateRef', 'shake')
         return false
-      } else {
-        if (target.matches('.cellphone')) {
-          this.$router.push({ name: 'MobileLoginTel' })
-        }
+      } else if (target.matches('.cellphone')) {
+        this.$router.push({ name: 'MobileLoginTel' })
+      } else if (target.matches('.experience')) {
+        this.$router.push({ name: 'Find' })
       }
     }
   }
@@ -139,16 +140,16 @@ export default {
     height: 7.2rem;
     @include fj(center);
     .login1 {
-      @include bis('~assets/images/weixin.png');
+      @include bis($url: '~assets/images/sprite1.png', $position: -0px -2px);
     }
     .login2 {
-      @include bis('~assets/images/qq.png');
+      @include bis($url: '~assets/images/sprite1.png', $position: -0px -32px);
     }
     .login3 {
-      @include bis('~assets/images/weibo.png');
+      @include bis($url: '~assets/images/sprite1.png', $position: -0px -62px);
     }
     .login4 {
-      @include bis('~assets/images/email.png');
+      @include bis($url: '~assets/images/sprite1.png', $position: -0px -95px);
     }
   }
 }

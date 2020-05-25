@@ -28,8 +28,14 @@
         @touchmove="moveImg"
         :style="listStyle"
       >
-        <div class="items" v-for="(item, index) in newSongData" :key="index">
-          <img :src="item.picUrl" ontouchend="return false" />
+        <div
+          class="items"
+          v-for="(item, index) in newSongData"
+          :key="index"
+          @touchmove="slipDetection"
+          @touchend="playMusic(item)"
+        >
+          <img v-lazy="item.picUrl" ontouchend="return false" />
           <div class="detailedInfo">
             <p>
               {{ item.name }}
@@ -51,7 +57,7 @@
         :style="listStyle"
       >
         <div class="items" v-for="(item, index) in newSongDish" :key="index">
-          <img :src="item.picUrl" />
+          <img v-lazy="item.picUrl" />
           <div class="detailedInfo">
             <p>
               {{ item.name }}
@@ -65,6 +71,12 @@
 </template>
 
 <script>
+import {
+  SAVE_SONG,
+  SHOW_PLAYER,
+  JUKEBOX_STOP,
+  PLAY_PAUSE
+} from 'store/mutation-type.js'
 export default {
   name: 'NewSongList',
   data() {
@@ -74,7 +86,8 @@ export default {
         x: 0
       },
       index: 0,
-      listStyle: {}
+      listStyle: {},
+      isMove: false // 是否滑动
     }
   },
   props: {
@@ -91,7 +104,6 @@ export default {
     // 触摸开始
     saveX(e) {
       this.start.x = e.changedTouches[0].pageX
-      // console.log(this.start.x)
     },
     // 触摸持续
     moveImg(e) {
@@ -118,7 +130,7 @@ export default {
         }
         this.index++
         this.setMoveStyle(0, 0.4)
-      } else {
+      } else if (distanceX > 0) {
         if (this.index === 0) {
           return false
         }
@@ -133,6 +145,40 @@ export default {
           distanceX}px)`,
         transition: `transform ${time}s`
       }
+    },
+    // 检测滑动
+    slipDetection() {
+      this.isMove = true
+    },
+    // 播放音乐
+    async playMusic(item) {
+      // 如果用户没有滑动且不是点击的同一个歌曲，则更新歌曲信息
+      if (!this.isMove && this.musicID !== item.id) {
+        this.musicID = item.id
+        // 保存歌曲信息到vuex
+        this.$store.commit(SAVE_SONG, {
+          id: item.id,
+          name: item.name,
+          arName: item.song.artists[0].name,
+          picUrl: item.picUrl
+        })
+        // 如果播放器和操作歌曲组件都没有打开，则打开播器
+        if (
+          this.$store.state.isShowOperationSong === false &&
+          this.$store.state.isShowPlayer === false
+        ) {
+          this.$store.commit(SHOW_PLAYER, true)
+        }
+      } else if (!this.isMove) {
+        // 如果点击的歌曲是同一个歌曲则只打开播放器
+        this.$store.commit(SHOW_PLAYER, true)
+      }
+      // 如果在在暂停中则切换为播放图标
+      if (!this.$store.state.playObj.playPause) {
+        this.$store.commit(JUKEBOX_STOP, !this.$store.state.playObj.jukeboxStop)
+        this.$store.commit(PLAY_PAUSE, !this.$store.state.playObj.playPause)
+      }
+      this.isMove = false
     }
   },
   computed: {

@@ -9,10 +9,18 @@ import upperFirst from 'lodash/upperFirst'
 import camelCase from 'lodash/camelCase'
 // 导入toast插件
 import ToastObj from 'plugins/toast/index.js'
+// 图片懒加载
+import VueLazyload from 'vue-lazyload'
+const loading = require('./assets/images/loading/loading.gif')
+
 Vue.use(ToastObj)
+Vue.use(VueLazyload, {
+  preLoad: 1.3,
+  loading: loading.default,
+  attempt: 1
+})
 
 // 自动注册基础组件
-
 const requireComponent = require.context(
   // 其组件目录的相对路径
   './components/common',
@@ -57,6 +65,16 @@ Vue.filter('shear', function(origin) {
   } else {
     return origin
   }
+})
+
+// 转换时间
+Vue.filter('format', function(interval) {
+  interval = Math.floor(interval)
+  const minute = Math.floor(interval / 60)
+  const second = Math.floor(interval % 60)
+    .toString()
+    .padStart(2, '0')
+  return `${minute}:${second}`
 })
 
 new Vue({

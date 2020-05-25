@@ -8,7 +8,9 @@ import {
   SHOW_OPERATION_SONG,
   SHOW_PLAYER,
   PLAY_PAUSE,
-  PLAYLIST
+  JUKEBOX_STOP,
+  PLAYLIST,
+  PERCENT_TIME
 } from 'store/mutation-type.js'
 
 export default {
@@ -38,9 +40,15 @@ export default {
     state.isShowPlayer = profile
   },
   [PLAY_PAUSE](state, profile) {
-    state.playPause = profile
+    state.playObj.playPause = profile
+  },
+  [JUKEBOX_STOP](state, profile) {
+    state.playObj.jukeboxStop = profile
   },
   [PLAYLIST](state, profile) {
-    state.playlist = profile
+    state.playObj.playlist = profile
+  },
+  [PERCENT_TIME](state, profile) {
+    state.playObj.percentTime = profile
   }
 }

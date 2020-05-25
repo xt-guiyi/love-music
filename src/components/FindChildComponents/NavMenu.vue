@@ -49,9 +49,9 @@ export default {
   overflow: hidden;
 }
 .content {
-  height: 9.5rem;
   width: 100%;
   overflow-x: scroll;
+  scrollbar-width: none;
   margin-right: 5%;
   @include fj();
 }
@@ -61,7 +61,7 @@ export default {
 .option {
   flex: 1;
   text-align: center;
-  margin: 2rem 5% 0.5rem 5%;
+  margin: 2rem 5% 0 5%;
 
   p:first-child {
     width: 5rem;

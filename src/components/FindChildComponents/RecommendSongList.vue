@@ -114,9 +114,9 @@ export default {
   height: 12.8rem;
   overflow: hidden;
   .content {
-    height: 13.5rem;
     padding-left: 5%;
     overflow-x: scroll;
+    scrollbar-width: none;
     @include fj();
     .options:first-child {
       margin-left: 0;
@@ -157,8 +157,8 @@ export default {
       p {
         width: 10rem;
         height: 2.8rem;
-        display: -webkit-box; /* autoprefixer: off */
-        -webkit-box-orient: vertical; /* autoprefixer: on */
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
         -webkit-line-clamp: 2;
         overflow: hidden;
         text-overflow: ellipsis;

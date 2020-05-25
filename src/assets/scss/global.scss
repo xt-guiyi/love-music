@@ -56,3 +56,18 @@ html {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+//谷歌隐藏滚动框
+::-webkit-scrollbar {
+  display: none;
+}
+
+//load过渡动画
+.fade-enter,
+.fade-leave-active {
+  opacity: 0;
+}
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s;
+}

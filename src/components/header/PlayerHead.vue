@@ -49,7 +49,7 @@ export default {
 @import '~assets/scss/mixin.scss';
 
 #headerNav {
-  height: 6rem;
+  height: 8%;
   width: 90%;
   display: flex;
   align-items: center;

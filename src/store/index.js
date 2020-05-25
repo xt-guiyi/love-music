@@ -12,8 +12,13 @@ const state = {
   initSong: {}, //  初始化歌曲信息
   isShowOperationSong: false, // 是否显示歌曲操作栏
   isShowPlayer: false, // 是否显示播放器
-  playPause: true, // 播放暂停
-  playlist: [] // 播放列表
+  // 播放器对象
+  playObj: {
+    playPause: true, // 播放暂停
+    jukeboxStop: true, // 唱片机暂停
+    playlist: [], // 播放列表
+    percentTime: 0 // 当前播放时间
+  }
 }
 export default new Vuex.Store({
   state,

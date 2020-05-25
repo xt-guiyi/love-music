@@ -4,6 +4,7 @@
   </div>
 </template>
 <script>
+import BScroll from 'better-scroll'
 export default {
   props: {
     /* 1 滚动的时候会派发scroll事件，会截流。
@@ -68,7 +69,7 @@ export default {
     // 保证在DOM渲染完毕后初始化better-scroll
     setTimeout(() => {
       this._initScroll()
-    }, 200)
+    }, 1000)
   },
   methods: {
     _initScroll() {
@@ -76,7 +77,6 @@ export default {
         return
       }
       // better-scroll的初始化
-      // eslint-disable-next-line no-undef
       this.scroll = new BScroll(this.$refs.wrapper, {
         probeType: this.probeType,
         click: this.click,
@@ -130,6 +130,10 @@ export default {
     enable() {
       // 代理better-scroll的enable方法
       this.scroll && this.scroll.enable()
+    },
+    stop() {
+      // 代理better-scroll的stop方法
+      this.scroll && this.scroll.stop()
     },
     refresh() {
       // 代理better-scroll的refresh方法

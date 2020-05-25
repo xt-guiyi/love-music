@@ -11,31 +11,54 @@
       <p>{{ initSong.name }}</p>
       <p>{{ initSong.arName }}</p>
     </div>
-    <div class="playKey" @touchend="play">
-      <span :style="imageStyle"></span>
+    <div class="playKey" @touchend.prevent="play">
+      <div class="circle">
+        <svg
+          viewBox="0 0 100 100"
+          version="1.1"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <circle
+            r="45"
+            cx="50"
+            cy="50"
+            fill="transparent"
+            class="progressBackground"
+          ></circle>
+          <circle
+            r="45"
+            cx="50"
+            cy="50"
+            fill="transparent"
+            :stroke-dasharray="dashArray"
+            :stroke-dashoffset="dashOffset"
+            class="progressBar"
+          ></circle>
+        </svg>
+        <span
+          :class="{ playImage: this.$store.state.playObj.playPause }"
+        ></span>
+      </div>
     </div>
     <div class="playMenu"><span></span></div>
-    <!-- <div v-if="player">
-      <audio ref="musciRef" :src="getMusic.url" autoplay hidden></audio>
-    </div> -->
   </div>
 </template>
 
 <script>
-import { SHOW_PLAYER, PLAY_PAUSE } from 'store/mutation-type.js'
+import { SHOW_PLAYER, PLAY_PAUSE, JUKEBOX_STOP } from 'store/mutation-type.js'
 
 export default {
   name: 'PlaylistSong',
   data() {
     return {
-      isplay: false, // 是否播放,
-      imageStyle: {}
+      dashArray: Math.PI * 90 // 圆的周长
     }
   },
 
   props: {},
   created() {},
   updated() {},
+  mounted() {},
   methods: {
     // 显示播放器
     showPlayer() {
@@ -43,26 +66,19 @@ export default {
     },
     // 播放暂替
     play() {
-      this.$store.commit(PLAY_PAUSE, this.isplay)
-      if (!this.isplay) {
-        const img = require('../../assets/images/operationSongPage/playlist.svg')
-        this.imageStyle = {
-          backgroundImage: 'url(' + img + ')'
-        }
-      } else {
-        const img = require('../../assets/images/operationSongPage/suspend.svg')
-        this.imageStyle = {
-          backgroundImage: 'url(' + img + ')'
-        }
-      }
-      this.isplay = !this.isplay
+      this.$store.commit(JUKEBOX_STOP, !this.$store.state.playObj.jukeboxStop)
+      this.$store.commit(PLAY_PAUSE, !this.$store.state.playObj.playPause)
     }
   },
   computed: {
     initSong() {
       return this.$store.state.initSong
+    },
+    dashOffset() {
+      return (1 - this.$store.state.playObj.percentTime) * this.dashArray
     }
-  }
+  },
+  watch: {}
 }
 </script>
 
@@ -113,10 +129,36 @@ export default {
   }
   .playKey {
     flex: 1.5;
-    span {
-      background-size: 80%;
-      background-image: url('~assets/images/operationSongPage/suspend.svg');
-      border-radius: 50%;
+    .circle {
+      position: relative;
+      height: 3.5rem;
+      width: 3.5rem;
+      margin: 0 auto;
+      // text-align: center;
+      svg {
+        .progressBackground {
+          stroke: rgba(114, 114, 114, 0.5);
+          stroke-width: 0.4rem;
+        }
+        .progressBar {
+          transform-origin: center;
+          transform: rotate(-90deg);
+          stroke: #ee4242;
+          stroke-width: 0.4rem;
+        }
+      }
+
+      span {
+        background-size: 80%;
+        background-image: url('~assets/images/operationSongPage/playlist.svg');
+        border-radius: 50%;
+        position: absolute;
+        left: 0;
+        top: 0;
+      }
+      .playImage {
+        background-image: url('~assets/images/operationSongPage/suspend.svg');
+      }
     }
   }
   .playMenu {

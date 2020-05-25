@@ -17,11 +17,11 @@ export const animateCSS = (vm, elementRef, animationName) => {
 // 从数组中随机获取任意个元素
 export const getRandomArrayElements = (arr, count) => {
   var newArr = arr.slice(0)
-  var i = arr.length,
-    min = i - count
+  var i = arr.length
+  var min = i - count
   while (i-- > min) {
-    let index = Math.floor(Math.random() * (i + 1))
-    let temp = newArr[index]
+    const index = Math.floor(Math.random() * (i + 1))
+    const temp = newArr[index]
     newArr[index] = newArr[i]
     newArr[i] = temp
   }

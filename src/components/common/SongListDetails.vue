@@ -1,5 +1,9 @@
 <template>
   <div>
+    <!-- loading -->
+    <transition name="fade">
+      <loading v-if="isLoading"></loading>
+    </transition>
     <!-- 头部导航栏 -->
     <!-- 导航栏背景层 -->
     <div
@@ -98,7 +102,8 @@
             <div class="songList">
               <ul>
                 <li
-                  v-for="(item, index) in songSheetData.tracks"
+                  v-for="(item, index) in songSheetData.songs"
+                  ref="musicItemRef"
                   :key="index"
                   @touchmove="slipDetection"
                   @touchend="playSong(item)"
@@ -139,13 +144,14 @@
 
 <script>
 import HeadNav from 'components/header/HeadNavigator.vue'
-import { songListPageApi } from 'request/api/index.js'
+import { songListPageApi, playerPageApi } from 'request/api/index.js'
 import { getRandomArrayElements } from 'utils/utilsFunction.js'
 import {
   PLAYLIST,
   SAVE_SONG,
-  SHOW_OPERATION_SONG,
-  SHOW_PLAYER
+  SHOW_PLAYER,
+  JUKEBOX_STOP,
+  PLAY_PAUSE
 } from 'store/mutation-type.js'
 export default {
   name: 'SongListDetails',
@@ -168,8 +174,13 @@ export default {
       },
       // 歌单详情页数据
       songSheetData: {
-        creator: {}
+        creator: {
+          avatarUrl: undefined
+        },
+        songs: []
       },
+      isLoading: true,
+      musicID: '', // 歌曲ID
       // 歌曲列表距离顶部的距离
       songListContentTop: 0,
       // 头部导航栏的高度
@@ -181,7 +192,10 @@ export default {
     HeadNav
   },
   created() {
-    this.getSongListDetails()
+    var timer = setTimeout(() => {
+      this.getSongListDetails()
+      clearTimeout(timer)
+    }, 500)
   },
   mounted() {
     setTimeout(() => {
@@ -195,23 +209,46 @@ export default {
     hideSongDetails() {
       this.$store.state.initSongSheet.isShow = false
     },
+
     // 获取歌单详情数据
     async getSongListDetails() {
       const { data } = await songListPageApi.playlistDetails(
         this.initSongSheetData.id
       )
+      // console.log(data)
       if (data.code === 200) {
-        console.log(data)
-        this.songSheetData = data.playlist
-        // 保存播放列表
-        this.$store.commit(PLAYLIST, data.privileges)
+        // 保存歌曲id
+        var trackIds = data.playlist.trackIds
+        var songIDList = []
+        trackIds.forEach(item => {
+          songIDList.push(item.id)
+        })
+        // 获得歌曲信息数组
+        this.getSongDetails(songIDList)
         // 处理数据
+        this.songSheetData.creator = data.playlist.creator
+        this.songSheetData.description = data.playlist.description
+        this.songSheetData.commentCount = data.playlist.commentCount
+        this.songSheetData.shareCount = data.playlist.shareCount
+        this.songSheetData.trackCount = data.playlist.trackCount
+        this.songSheetData.subscribedCount = data.playlist.subscribedCount
+        this.songSheetData.subscribers = data.playlist.subscribers
         // 从订阅人数组中随机抽五人
         this.songSheetData.subscribers = getRandomArrayElements(
           this.songSheetData.subscribers,
           5
         )
+        this.isLoading = false
       }
+    },
+
+    async getSongDetails(songIDList) {
+      songIDList = songIDList.join(',')
+      const { data } = await playerPageApi.getSongDetails(songIDList)
+      // 保存播放列表
+      this.$store.commit(PLAYLIST, data.privileges)
+      // 播放歌曲数据
+      this.songSheetData.songs = data.songs
     },
     // 处理移动透明
     handleScroll(pos) {
@@ -223,14 +260,20 @@ export default {
       if (dis === this.songListContentTop) {
         this.$refs.headRef.style.opacity = 0
       }
+      if (dis === this.headNavHeight) {
+      }
     },
+
     // 检测滑动
     slipDetection() {
       this.isMove = true
     },
+
     // 播放歌曲
     playSong(item) {
-      if (!this.isMove) {
+      // 如果用户没有滑动且不是点击的同一个歌曲，则更新歌曲信息
+      if (!this.isMove && this.musicID !== item.id) {
+        this.musicID = item.id
         // 保存歌曲信息到vuex
         this.$store.commit(SAVE_SONG, {
           id: item.id,
@@ -238,23 +281,33 @@ export default {
           arName: item.ar[0].name,
           picUrl: item.al.picUrl
         })
+        // 如果播放器和操作歌曲组件都没有打开，则打开播器
         if (
           this.$store.state.isShowOperationSong === false &&
           this.$store.state.isShowPlayer === false
         ) {
-          this.$store.commit(SHOW_OPERATION_SONG, true)
           this.$store.commit(SHOW_PLAYER, true)
         }
+      } else if (!this.isMove) {
+        // 如果点击的歌曲是同一个歌曲则只打开播放器
+        this.$store.commit(SHOW_PLAYER, true)
+      }
+      // 如果在在暂停中则切换为播放图标
+      if (!this.$store.state.playObj.playPause) {
+        this.$store.commit(JUKEBOX_STOP, !this.$store.state.playObj.jukeboxStop)
+        this.$store.commit(PLAY_PAUSE, !this.$store.state.playObj.playPause)
       }
       this.isMove = false
     }
   },
   computed: {
+    // 歌单背景图片
     backgroundImage() {
       return (
         this.songSheetData.backgroundCoverUrl || this.initSongSheetData.picUrl
       )
     },
+    // 初始歌单数据
     initSongSheetData() {
       return this.$store.state.initSongSheet
     }
@@ -500,7 +553,10 @@ export default {
     color: $netease-color-five;
   }
 }
+
 .fix {
-  @include pz($position: fixed, $bottom: 0, $zIndex: 999);
+  position: fixed;
+  bottom: 0;
+  z-index: 1000;
 }
 </style>

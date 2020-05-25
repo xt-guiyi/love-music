@@ -7,4 +7,6 @@ export const SAVE_SONG = 'SAVE_SONG' // 保存歌曲信息
 export const SHOW_OPERATION_SONG = 'SHOW_OPERATION_SONG' // 保存歌曲信息
 export const SHOW_PLAYER = 'SHOW_PLAYER' // 保存歌曲信息
 export const PLAY_PAUSE = 'PLAY_PAUSE' // 播放暂停
+export const JUKEBOX_STOP = 'JUKEBOX_STOP' // 唱片机暂停
 export const PLAYLIST = 'PLAYLIST' // 播放列表
+export const PERCENT_TIME = 'PERCENT_TIME' // 播放时间
