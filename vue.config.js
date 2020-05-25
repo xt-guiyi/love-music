@@ -4,6 +4,7 @@ function resolve(dir) {
 }
 module.exports = {
   lintOnSave: true,
+  publicPath: '/neteasecloudmusic/',
   chainWebpack: config => {
     // 别名
     config.resolve.alias
