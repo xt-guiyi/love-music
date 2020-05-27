@@ -4,7 +4,7 @@ function resolve(dir) {
 }
 module.exports = {
   lintOnSave: true,
-  publicPath: '/neteasecloudmusic/',
+  // publicPath: '/neteasecloudmusic/',
   chainWebpack: config => {
     // 别名
     config.resolve.alias
@@ -17,7 +17,7 @@ module.exports = {
       .set('request', resolve('src/request'))
       .set('plugins', resolve('src/plugins'))
 
-    //cdn设置
+    // cdn设置
     config.set('externals', {
       'better-scroll': 'BScroll',
       vue: 'Vue',
@@ -41,7 +41,7 @@ module.exports = {
         args[0].parallel = true
         return args
       })
-      //设置标题
+      // 设置标题
       config.plugin('html').tap(args => {
         args[0].title = '爱音乐'
         return args

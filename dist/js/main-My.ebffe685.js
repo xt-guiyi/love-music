@@ -1,2 +1,2 @@
 (window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["main-My"],{"62b1":function(n,e,t){"use strict";t.r(e);var a=function(){var n=this,e=n.$createElement,t=n._self._c||e;return t("div",[n._v(" 我的 ")])},c=[],i={},r=i,s=t("2877"),u=Object(s["a"])(r,a,c,!1,null,"0390bd57",null);e["default"]=u.exports}}]);
-//# sourceMappingURL=main-My.bf061eaa.js.map
+//# sourceMappingURL=main-My.ebffe685.js.map

@@ -8,9 +8,7 @@ import axios from 'axios'
 import Vue from 'vue'
 
 // base地址
-// http://172.20.10.5:8080/#/Login
-// 172.20.10.1
-axios.defaults.baseURL = 'http://192.168.43.47:3000'
+axios.defaults.baseURL = 'http://localhost:3000'
 
 // 请求失败处理
 const errorHandle = (status, other) => {
