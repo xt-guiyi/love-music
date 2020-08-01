@@ -6,13 +6,7 @@
     </transition>
     <!-- 头部导航栏 -->
     <!-- 导航栏背景层 -->
-    <div
-      class="head"
-      ref="headRef"
-      :style="{
-        backgroundImage: 'url(' + backgroundImage + ')'
-      }"
-    >
+    <div class="head" ref="headRef" :style="bgImgae">
       <!-- 遮罩层 -->
       <div class="inner"></div>
     </div>
@@ -41,12 +35,7 @@
       >
         <div class="content">
           <!-- 歌单信息 -->
-          <div
-            class="songListInfo"
-            :style="{
-              backgroundImage: 'url(' + backgroundImage + ')'
-            }"
-          >
+          <div class="songListInfo" :style="bgImgae">
             <!-- 遮罩层 -->
             <div class="inner"></div>
             <!-- 顶层 -->
@@ -56,12 +45,7 @@
               <!-- 歌单创建者和描述 -->
               <div class="songListDes">
                 <p>
-                  <span
-                    :style="{
-                      backgroundImage:
-                        'url(' + songSheetData.creator.avatarUrl + ')'
-                    }"
-                  ></span
+                  <span :style="bgOwnerImage"></span
                   >{{ songSheetData.creator.nickname }}
                 </p>
                 <p>{{ songSheetData.description }}</p>
@@ -177,14 +161,15 @@ export default {
         creator: {
           avatarUrl: undefined
         },
-        songs: []
+        songs: [] // 歌单详情列表
       },
       isLoading: true,
-      musicID: '', // 歌曲ID
-      // 歌曲列表距离顶部的距离
-      songListContentTop: 0,
-      // 头部导航栏的高度
-      headNavHeight: 0,
+      musicID: '', // 歌曲ID,
+      songIDList: [], // 歌单列表中的歌曲id数组
+      palySongs: [], // 播放列表，用于提交到vuex全局上
+      isCommit: true, // 是否是第一次打开歌单
+      songListContentTop: 0, // 歌曲列表距离顶部的距离
+      headNavHeight: 0, // 头部导航栏的高度
       isMove: false // 是否滑动
     }
   },
@@ -201,7 +186,6 @@ export default {
     setTimeout(() => {
       this.songListContentTop = this.$refs.songListContentRef.getBoundingClientRect().top
       this.headNavHeight = this.$refs.headRef.clientHeight
-      // console.log(this.headNavHeight)
     }, 800)
   },
   methods: {
@@ -212,44 +196,43 @@ export default {
 
     // 获取歌单详情数据
     async getSongListDetails() {
-      const { data } = await songListPageApi.playlistDetails(
+      const { data: songList } = await songListPageApi.playlistDetails(
         this.initSongSheetData.id
       )
-      // console.log(data)
-      if (data.code === 200) {
-        // 保存歌曲id
-        var trackIds = data.playlist.trackIds
-        var songIDList = []
+      if (songList.code === 200) {
+        // 保存歌曲id列表，用于获取歌曲详情列表
+        var trackIds = songList.playlist.trackIds
         trackIds.forEach(item => {
-          songIDList.push(item.id)
+          this.songIDList.push(item.id)
         })
-        // 获得歌曲信息数组
-        this.getSongDetails(songIDList)
-        // 处理数据
-        this.songSheetData.creator = data.playlist.creator
-        this.songSheetData.description = data.playlist.description
-        this.songSheetData.commentCount = data.playlist.commentCount
-        this.songSheetData.shareCount = data.playlist.shareCount
-        this.songSheetData.trackCount = data.playlist.trackCount
-        this.songSheetData.subscribedCount = data.playlist.subscribedCount
-        this.songSheetData.subscribers = data.playlist.subscribers
+        // 处理歌单相关数据
+        this.songSheetData.creator = songList.playlist.creator
+        this.songSheetData.description = songList.playlist.description
+        this.songSheetData.commentCount = songList.playlist.commentCount
+        this.songSheetData.shareCount = songList.playlist.shareCount
+        this.songSheetData.trackCount = songList.playlist.trackCount
+        this.songSheetData.subscribedCount = songList.playlist.subscribedCount
+        this.songSheetData.subscribers = songList.playlist.subscribers
         // 从订阅人数组中随机抽五人
         this.songSheetData.subscribers = getRandomArrayElements(
           this.songSheetData.subscribers,
           5
         )
-        this.isLoading = false
       }
+      // 获取歌单全部歌曲
+      this.songIDList = this.songIDList.join(',')
+      const { data: songDetails } = await playerPageApi.getSongDetails(
+        this.songIDList
+      )
+      if (songDetails.code === 200) {
+        // 歌曲详情列表
+        this.songSheetData.songs = songDetails.songs
+        // 播放歌曲列表
+        this.palySongs = songDetails.privileges
+      }
+      this.isLoading = false
     },
 
-    async getSongDetails(songIDList) {
-      songIDList = songIDList.join(',')
-      const { data } = await playerPageApi.getSongDetails(songIDList)
-      // 保存播放列表
-      this.$store.commit(PLAYLIST, data.privileges)
-      // 播放歌曲数据
-      this.songSheetData.songs = data.songs
-    },
     // 处理移动透明
     handleScroll(pos) {
       // 让顶部透明度之间来回变化
@@ -288,24 +271,24 @@ export default {
         ) {
           this.$store.commit(SHOW_PLAYER, true)
         }
-      } else if (!this.isMove) {
+        // 提交播放列表到vuex
+        this.$store.commit(PLAYLIST, this.palySongs)
+      } else if (!this.isMove && this.musicID == item.id) {
         // 如果点击的歌曲是同一个歌曲则只打开播放器
         this.$store.commit(SHOW_PLAYER, true)
-      }
-      // 如果在在暂停中则切换为播放图标
-      if (!this.$store.state.playObj.playPause) {
-        this.$store.commit(JUKEBOX_STOP, !this.$store.state.playObj.jukeboxStop)
-        this.$store.commit(PLAY_PAUSE, !this.$store.state.playObj.playPause)
       }
       this.isMove = false
     }
   },
   computed: {
     // 歌单背景图片
-    backgroundImage() {
-      return (
-        this.songSheetData.backgroundCoverUrl || this.initSongSheetData.picUrl
-      )
+    bgImgae() {
+      return `background-image:url(${this.songSheetData.backgroundCoverUrl ||
+        this.initSongSheetData.picUrl})`
+    },
+    // 歌单所有者图片
+    bgOwnerImage() {
+      return `background-image:url(${this.songSheetData.creator.avatarUrl})`
     },
     // 初始歌单数据
     initSongSheetData() {

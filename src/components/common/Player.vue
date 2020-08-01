@@ -110,7 +110,7 @@
     <audio
       ref="musicRef"
       autoplay
-      hidden
+      hidde
       @ended="palyNext"
       @canplay="ready"
       @timeupdate="updateTime"
@@ -223,7 +223,7 @@ export default {
 
     // 播放下一首
     nextSong() {
-      // 歌曲没缓存则点击无效
+      // 歌曲没缓存则点击无效，避免连续点击过快
       if (!this.songReady) {
         return
       }
@@ -231,6 +231,7 @@ export default {
       if (!this.$store.state.playObj.playPause) {
         this.play(false)
       }
+      this.songReady = false
       this.palyNext(true)
     },
 
@@ -242,6 +243,7 @@ export default {
       if (!this.$store.state.playObj.playPause) {
         this.play(false)
       }
+      this.songReady = false
       this.palyNext(false)
     },
 
@@ -284,6 +286,7 @@ export default {
           }
         }
       }
+      console.log(playlist[index])
       this.getSongDetails(playlist[index].id)
     },
     // 缓冲成功
@@ -294,6 +297,11 @@ export default {
         this.duration = e.target.duration
         clearTimeout(timer)
       }, 400)
+      // 如果在在暂停中则切换为播放图标
+      if (!this.isMove && !this.$store.state.playObj.playPause) {
+        this.$store.commit(JUKEBOX_STOP, !this.$store.state.playObj.jukeboxStop)
+        this.$store.commit(PLAY_PAUSE, !this.$store.state.playObj.playPause)
+      }
     },
 
     // 更新播放进度

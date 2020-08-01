@@ -173,11 +173,6 @@ export default {
         // 如果点击的歌曲是同一个歌曲则只打开播放器
         this.$store.commit(SHOW_PLAYER, true)
       }
-      // 如果在在暂停中则切换为播放图标
-      if (!this.$store.state.playObj.playPause) {
-        this.$store.commit(JUKEBOX_STOP, !this.$store.state.playObj.jukeboxStop)
-        this.$store.commit(PLAY_PAUSE, !this.$store.state.playObj.playPause)
-      }
       this.isMove = false
     }
   },
