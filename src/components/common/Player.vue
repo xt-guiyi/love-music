@@ -286,7 +286,6 @@ export default {
           }
         }
       }
-      console.log(playlist[index])
       this.getSongDetails(playlist[index].id)
     },
     // 缓冲成功

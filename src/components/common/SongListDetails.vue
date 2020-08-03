@@ -167,7 +167,6 @@ export default {
       musicID: '', // 歌曲ID,
       songIDList: [], // 歌单列表中的歌曲id数组
       palySongs: [], // 播放列表，用于提交到vuex全局上
-      isCommit: true, // 是否是第一次打开歌单
       songListContentTop: 0, // 歌曲列表距离顶部的距离
       headNavHeight: 0, // 头部导航栏的高度
       isMove: false // 是否滑动
