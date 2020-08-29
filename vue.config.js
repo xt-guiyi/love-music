@@ -19,7 +19,7 @@ module.exports = {
 
     // cdn设置
     config.set('externals', {
-      'better-scroll': 'BScroll',
+      'better-scroll': 'BetterScroll',
       vue: 'Vue',
       'vue-router': 'VueRouter'
     })

@@ -130,13 +130,7 @@
 import HeadNav from 'components/header/HeadNavigator.vue'
 import { songListPageApi, playerPageApi } from 'request/api/index.js'
 import { getRandomArrayElements } from 'utils/utilsFunction.js'
-import {
-  PLAYLIST,
-  SAVE_SONG,
-  SHOW_PLAYER,
-  JUKEBOX_STOP,
-  PLAY_PAUSE
-} from 'store/mutation-type.js'
+import { PLAYLIST, SAVE_SONG, SHOW_PLAYER } from 'store/mutation-type.js'
 export default {
   name: 'SongListDetails',
   data() {
@@ -272,7 +266,7 @@ export default {
         }
         // 提交播放列表到vuex
         this.$store.commit(PLAYLIST, this.palySongs)
-      } else if (!this.isMove && this.musicID == item.id) {
+      } else if (!this.isMove && this.musicID === item.id) {
         // 如果点击的歌曲是同一个歌曲则只打开播放器
         this.$store.commit(SHOW_PLAYER, true)
       }

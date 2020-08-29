@@ -286,6 +286,10 @@ export default {
           }
         }
       }
+      if (index === undefined) {
+        this.$toast('播放队列只有一首歌')
+        return
+      }
       this.getSongDetails(playlist[index].id)
     },
     // 缓冲成功

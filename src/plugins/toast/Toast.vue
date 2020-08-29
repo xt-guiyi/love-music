@@ -32,5 +32,6 @@ export default {
   position: fixed;
   left: calc(50% - 13.3rem);
   bottom: 15%;
+  z-index: 10000;
 }
 </style>
